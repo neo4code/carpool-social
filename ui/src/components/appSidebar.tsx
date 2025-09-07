@@ -16,6 +16,7 @@ import {
   SidebarGroupLabel,
   SidebarGroupContent,
 } from "@/components/ui/sidebar";
+import { isFeatureEnabled } from "@/lib/feature-config";
 
 export function AppSidebar() {
   const location = useLocation();
@@ -37,22 +38,26 @@ export function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton tooltip="Page 1" isActive={isActive('/page1')} asChild>
-                  <Link to="/page1">
-                    <FileText className="w-4 h-4" />
-                    <span>Page 1</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton tooltip="Page 2" isActive={isActive('/page2')} asChild>
-                  <Link to="/page2">
-                    <Layers className="w-4 h-4" />
-                    <span>Page 2</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {isFeatureEnabled('PAGE1') && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton tooltip="Page 1" isActive={isActive('/page1')} asChild>
+                    <Link to="/page1">
+                      <FileText className="w-4 h-4" />
+                      <span>Page 1</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
+              {isFeatureEnabled('PAGE2') && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton tooltip="Page 2" isActive={isActive('/page2')} asChild>
+                    <Link to="/page2">
+                      <Layers className="w-4 h-4" />
+                      <span>Page 2</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -60,14 +65,16 @@ export function AppSidebar() {
 
       <SidebarFooter>
         <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton tooltip="Settings" isActive={isActive('/settings')} asChild>
-              <Link to="/settings">
-                <Settings className="w-4 h-4" />
-                <span>Settings</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {isFeatureEnabled('SETTINGS') && (
+            <SidebarMenuItem>
+              <SidebarMenuButton tooltip="Settings" isActive={isActive('/settings')} asChild>
+                <Link to="/settings">
+                  <Settings className="w-4 h-4" />
+                  <span>Settings</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>

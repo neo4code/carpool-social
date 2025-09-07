@@ -8,11 +8,12 @@ import { Settings } from '@/pages/Settings';
 import { Page1 } from '@/pages/Page1';
 import { Page2 } from '@/pages/Page2';
 import { Landing } from '@/pages/Landing';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import {
   SidebarProvider,
   SidebarInset,
 } from "@/components/ui/sidebar";
+import { isFeatureEnabled } from '@/lib/feature-config';
 
 function AppContent() {
   const { user, loading } = useAuth();
@@ -45,9 +46,21 @@ function AppContent() {
                 <main className="flex-1">
                   <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route path="/page1" element={<Page1 />} />
-                    <Route path="/page2" element={<Page2 />} />
-                    <Route path="/settings" element={<Settings />} />
+                    {isFeatureEnabled('PAGE1') ? (
+                      <Route path="/page1" element={<Page1 />} />
+                    ) : (
+                      <Route path="/page1" element={<Navigate to="/" replace />} />
+                    )}
+                    {isFeatureEnabled('PAGE2') ? (
+                      <Route path="/page2" element={<Page2 />} />
+                    ) : (
+                      <Route path="/page2" element={<Navigate to="/" replace />} />
+                    )}
+                    {isFeatureEnabled('SETTINGS') ? (
+                      <Route path="/settings" element={<Settings />} />
+                    ) : (
+                      <Route path="/settings" element={<Navigate to="/" replace />} />
+                    )}
                   </Routes>
                 </main>
               </SidebarInset>
