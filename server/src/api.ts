@@ -6,6 +6,7 @@ import { authMiddleware } from './middleware/auth';
 import { getDatabase, testDatabaseConnection } from './lib/db';
 import { setEnvContext, clearEnvContext, getDatabaseUrl } from './lib/env';
 import * as schema from './schema/users';
+import { authEvents } from './schema/auth-events';
 
 type Env = {
   RUNTIME?: string;
@@ -95,6 +96,53 @@ protectedRoutes.get('/me', (c) => {
     user,
     message: 'You are authenticated!',
   });
+});
+
+// Auth event logging endpoint
+protectedRoutes.post('/auth/log-event', async (c) => {
+  try {
+    const user = c.get('user');
+    const { event_type, provider, metadata } = await c.req.json();
+
+    // Validate required fields
+    if (!event_type || !provider) {
+      return c.json({ error: 'event_type and provider are required' }, 400);
+    }
+
+    // Validate event_type
+    if (!['signup', 'login', 'logout'].includes(event_type)) {
+      return c.json({ error: 'event_type must be one of: signup, login, logout' }, 400);
+    }
+
+    const databaseUrl = getDatabaseUrl();
+    const db = await getDatabase(databaseUrl);
+
+    // Capture IP address and User-Agent from request headers
+    const ipAddress = c.req.header('x-forwarded-for') || 
+                     c.req.header('x-real-ip') || 
+                     c.req.header('cf-connecting-ip') ||
+                     'unknown';
+    const userAgent = c.req.header('user-agent') || 'unknown';
+
+    // Log the auth event
+    await db.insert(authEvents)
+      .values({
+        user_id: user.id,
+        event_type,
+        provider,
+        ip_address: ipAddress,
+        user_agent: userAgent,
+        metadata: {
+          ...metadata,
+          timestamp: new Date().toISOString(),
+        },
+      });
+
+    return c.json({ success: true, message: 'Auth event logged successfully' });
+  } catch (error) {
+    console.error('Error logging auth event:', error);
+    return c.json({ error: 'Failed to log auth event' }, 500);
+  }
 });
 
 // Mount the protected routes under /protected

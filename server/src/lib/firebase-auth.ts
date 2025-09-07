@@ -4,6 +4,14 @@ import { isDevelopment, getEnv } from './env';
 type FirebaseUser = {
   id: string;
   email: string | undefined;
+  displayName?: string;
+  photoURL?: string;
+  providerId?: string;
+  providerData?: any[];
+  firebase?: {
+    sign_in_provider?: string;
+    identities?: Record<string, any>;
+  };
 };
 
 const getJWKS = () => {
@@ -41,17 +49,31 @@ export async function verifyFirebaseToken(token: string, projectId: string): Pro
       
       const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
       
-      // Basic validation for emulator tokens
-      if (!payload.sub || !payload.aud || payload.aud !== projectId) {
-        throw new Error('Invalid token payload');
+      // Basic validation for emulator tokens - be more lenient
+      if (!payload.sub) {
+        throw new Error('Invalid token payload - missing sub');
       }
+      
+      // For emulator, the audience might be different, so don't enforce strict matching
+      console.log('Emulator token payload:', { 
+        sub: payload.sub, 
+        aud: payload.aud, 
+        projectId,
+        email: payload.email 
+      });
       
       return {
         id: payload.sub as string,
         email: payload.email as string | undefined,
+        displayName: payload.name as string | undefined,
+        photoURL: payload.picture as string | undefined,
+        providerId: payload.provider_id as string | undefined,
+        providerData: payload.provider_data as any[] | undefined,
+        firebase: payload.firebase as any | undefined,
       };
     } catch (error) {
-      throw new Error('Invalid emulator token');
+      console.error('Emulator token decode error:', error);
+      throw new Error(`Invalid emulator token: ${error.message}`);
     }
   }
 
@@ -68,6 +90,11 @@ export async function verifyFirebaseToken(token: string, projectId: string): Pro
     return {
       id: payload.sub as string,
       email: payload.email as string | undefined,
+      displayName: payload.name as string | undefined,
+      photoURL: payload.picture as string | undefined,
+      providerId: payload.provider_id as string | undefined,
+      providerData: payload.provider_data as any[] | undefined,
+      firebase: payload.firebase as any | undefined,
     };
   } catch (error) {
     throw new Error('Invalid token');

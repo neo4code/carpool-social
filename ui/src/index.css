@@ -80,6 +80,7 @@
 /* Smooth theme transitions - only on specific elements that need it */
 html {
   transition: background-color 0.2s ease;
+  scroll-behavior: smooth;
 }
 
 body {

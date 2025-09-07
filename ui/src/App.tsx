@@ -7,6 +7,7 @@ import { Home } from '@/pages/Home';
 import { Settings } from '@/pages/Settings';
 import { Page1 } from '@/pages/Page1';
 import { Page2 } from '@/pages/Page2';
+import { Landing } from '@/pages/Landing';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import {
   SidebarProvider,
@@ -23,25 +24,35 @@ function AppContent() {
   return (
     <SidebarProvider>
       <div className="flex flex-col w-full min-h-screen bg-background">
-        <Navbar />
         {!user ? (
-          <main className="flex flex-col items-center justify-center flex-1 p-4">
-            <LoginForm />
-          </main>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/login" element={
+              <div className="min-h-screen bg-background">
+                <Navbar />
+                <main className="flex flex-col items-center justify-center flex-1 p-4">
+                  <LoginForm />
+                </main>
+              </div>
+            } />
+          </Routes>
         ) : (
-          <div className="flex flex-1">
-            <AppSidebar />
-            <SidebarInset className="flex-1">
-              <main className="flex-1">
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/page1" element={<Page1 />} />
-                  <Route path="/page2" element={<Page2 />} />
-                  <Route path="/settings" element={<Settings />} />
-                </Routes>
-              </main>
-            </SidebarInset>
-          </div>
+          <>
+            <Navbar />
+            <div className="flex flex-1">
+              <AppSidebar />
+              <SidebarInset className="flex-1">
+                <main className="flex-1">
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/page1" element={<Page1 />} />
+                    <Route path="/page2" element={<Page2 />} />
+                    <Route path="/settings" element={<Settings />} />
+                  </Routes>
+                </main>
+              </SidebarInset>
+            </div>
+          </>
         )}
       </div>
     </SidebarProvider>

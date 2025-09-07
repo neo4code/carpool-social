@@ -1,7 +1,7 @@
 import { getAuth } from 'firebase/auth';
 import { app } from './firebase';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8787';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5600';
 
 class APIError extends Error {
   constructor(public status: number, message: string) {
@@ -51,6 +51,21 @@ export async function getCurrentUser() {
   return response.json();
 }
 
+export async function logAuthEvent(eventType: 'signup' | 'login' | 'logout', provider: string, metadata?: any) {
+  const response = await fetchWithAuth('/api/v1/protected/auth/log-event', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      event_type: eventType,
+      provider,
+      metadata,
+    }),
+  });
+  return response.json();
+}
+
 // Example of how to add more API endpoints:
 // export async function createChat(data: CreateChatData) {
 //   const response = await fetchWithAuth('/api/v1/protected/chats', {
@@ -65,5 +80,6 @@ export async function getCurrentUser() {
 
 export const api = {
   getCurrentUser,
+  logAuthEvent,
   // Add other API endpoints here
 }; 
