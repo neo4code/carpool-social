@@ -5,11 +5,12 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
+    "build": "tsc && node scripts/setup-production.js",
     "start": "node dist/server.js",
     "db:push": "drizzle-kit push:pg",
     "db:generate": "drizzle-kit generate:pg",
-    "db:migrate": "tsx src/scripts/migrate.ts"
+    "db:migrate": "tsx src/scripts/migrate.ts",
+    "setup:production": "node scripts/setup-production.js"
   },
   "dependencies": {
     "hono": "^4.7.10",
