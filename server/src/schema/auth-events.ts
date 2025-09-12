@@ -1,5 +1,5 @@
 import { pgTable, serial, text, timestamp, jsonb, index } from 'drizzle-orm/pg-core';
-import { appSchema, users } from './users';
+import { appSchema, users } from './users.js';
 
 export const authEvents = appSchema.table('auth_events', {
   id: serial('id').primaryKey(),

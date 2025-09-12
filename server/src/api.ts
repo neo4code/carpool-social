@@ -2,11 +2,11 @@ import 'dotenv/config';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
-import { authMiddleware } from './middleware/auth';
-import { getDatabase, testDatabaseConnection } from './lib/db';
-import { setEnvContext, clearEnvContext, getDatabaseUrl } from './lib/env';
-import * as schema from './schema/users';
-import { authEvents } from './schema/auth-events';
+import { authMiddleware } from './middleware/auth.js';
+import { getDatabase, testDatabaseConnection } from './lib/db.js';
+import { setEnvContext, clearEnvContext, getDatabaseUrl } from './lib/env.js';
+import * as schema from './schema/users.js';
+import { authEvents } from './schema/auth-events.js';
 
 type Env = {
   RUNTIME?: string;

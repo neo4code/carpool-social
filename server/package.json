@@ -2,6 +2,7 @@
   "name": "carpool-social-server",
   "version": "1.0.0",
   "description": "Backend server for Carpool Social platform",
+  "type": "module",
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",

@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { serve } from '@hono/node-server';
-import app from './api';
-import { getEnv, getDatabaseUrl, isLocalEmbeddedPostgres } from './lib/env';
+import app from './api.js';
+import { getEnv, getDatabaseUrl, isLocalEmbeddedPostgres } from './lib/env.js';
 
 // Parse CLI arguments
 const parseCliArgs = () => {
