@@ -73,7 +73,7 @@ export async function verifyFirebaseToken(token: string, projectId: string): Pro
       };
     } catch (error) {
       console.error('Emulator token decode error:', error);
-      throw new Error(`Invalid emulator token: ${error.message}`);
+      throw new Error(`Invalid emulator token: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
